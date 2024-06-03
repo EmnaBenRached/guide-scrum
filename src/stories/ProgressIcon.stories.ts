@@ -1,13 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/vue3';
-import ListItem from '../components/ListItem.vue';
+import ProgressIcon from '../components/ProgressIcon.vue';
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories
 const meta = {
-    title: 'Example/ListItem',
-    component: ListItem,
+    title: 'Example/ProgressIcon',
+    component: ProgressIcon,
     // This component will have an automatically generated docsPage entry: https://storybook.js.org/docs/writing-docs/autodocs
     tags: ['autodocs'],
-} satisfies Meta<typeof ListItem>;
+} satisfies Meta<typeof ProgressIcon>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -18,22 +18,16 @@ type Story = StoryObj<typeof meta>;
  */
 export const Default: Story = {
     args: {
-        item: {
-            title: 'Item 1',
-            description: 'Description for item 1',
-            participants: [],
-            progress: 0,
-        },
+        progress: 50,
     },
 };
-
-export const WithVeryLongTitle: Story = {
+export const Complete: Story = {
     args: {
-        item: {
-            title: 'Very long title for an item that should be truncated',
-            description: 'Description for item 1',
-            participants: [],
-            progress: 0,
-        },
+        progress: 100,
+    },
+};
+export const NoBegin: Story = {
+    args: {
+        progress: 0,
     },
 };

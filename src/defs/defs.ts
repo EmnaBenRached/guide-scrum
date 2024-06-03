@@ -2,6 +2,7 @@ export interface GSListItem {
     title: string;
     description: string;
     participants: GSUser[];
+    progress: number;
 }
 
 export interface GSList {

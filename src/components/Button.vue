@@ -1,10 +1,5 @@
 <template>
-    <button
-        type="button"
-        class="focus:shadow-outline rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700 focus:outline-none"
-        @click="onClick"
-        :style="style"
-    >
+    <button type="button" class="rounded bg-blue-500 p-2 text-white">
         {{ props.label }}
     </button>
 </template>
@@ -14,8 +9,6 @@ import { defineProps } from 'vue';
 
 const props = defineProps<{
     label: string;
-    onClick: () => void;
-    style?: string;
 }>();
 </script>
 

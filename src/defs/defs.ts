@@ -15,3 +15,5 @@ export interface GSUser {
     email: string;
     avatar: string;
 }
+
+

@@ -1,13 +1,16 @@
 <template>
-    <TransitionRoot
-        as="template"
-        enter="transition-all duration-500"
-        enter-from="opacity-0  -translate-y-full"
-        enter-to="opacity-100 translate-y-0"
-        leave="transition-all duration-150"
-        leave-from="opacity-100 translate-y-0"
-        leave-to="opacity-0 -translate-y-full"
-
+    <p class="text-center">Are you sure you want to delete all items?</p>
+    <div class="flex justify-center space-x-4">
+        <Button label="Yes" @click="emits('delete-items-confirmed')"></Button>
+        <Button label="No" @click="emits('close-confirm-modal')"></Button>
+    </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { defineEmits } from 'vue';
+import Button from './Button.vue';
+const emits = defineEmits<{
+    (event: 'delete-items-confirmed'): void;
+    (event: 'close-confirm-modal'): void;
+}>();
+</script>

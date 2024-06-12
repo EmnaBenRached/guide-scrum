@@ -8,7 +8,7 @@
             ></textarea>
             <Listbox v-model="formValue.title">
                 <ListboxButton>
-                    <span>{{ formValue.title }}</span>
+                    <!-- <span>{{ formValue.title }}</span> -->
                 </ListboxButton>
                 <ListboxOptions v-slot="{ selected }">
                     <ListboxOption

@@ -1,15 +1,31 @@
 <template>
-    <div class="mt-2 min-h-screen bg-red-200">
-        <h1 class="p-6 text-center text-4xl">Guide Scrum</h1>
-        <p class="p-2 text-center">Welcome to the Guide Scrum</p>
+    <div class="mt-2 min-h-screen bg-slate-50">
+        <div
+            class="box-border h-40 border-4 bg-fixed p-4"
+            style="
+                background-image: url(https://www.pexels.com/photo/dried-slices-of-orange-on-brown-surface-5490077/);
+            "
+        >
+            <h1
+                class="bg-gradient-to-r from-yellow-400 via-orange-600 to-pink-500 bg-clip-text p-6 text-center text-4xl font-extrabold text-gray-800 text-transparent drop-shadow-lg"
+            >
+                Guide Scrum
+            </h1>
+            <p class="p-2 text-center text-lg font-medium italic text-cyan-700">
+                Welcome to the Guide Scrum
+            </p>
+        </div>
         <div class="flex flex-wrap justify-between">
-            <div v-for="group in groups" class="p-10">
-                <ListItems
-                    :items="group.items"
-                    :title="group.title"
-                    @add-item="onAddItem(group.id)"
-                    @delete-item="onDeleteItem(group.id, $event)"
-                />
+            <div v-for="group in groups" :key="group.id" class="w-1/3 p-4">
+                <div class="h-full rounded-lg bg-slate-100">
+                    <ListItems
+                        :items="group.items"
+                        :title="group.title"
+                        @add-item="onAddItem(group.id)"
+                        @delete-item="onDeleteItem(group.id, $event)"
+                        @delete-items="onDeleteItems(group.id)"
+                    />
+                </div>
             </div>
         </div>
 
@@ -22,11 +38,17 @@
             leave-from="opacity-100"
             leave-to="opacity-0"
         >
-            <Dialog @close="closeModal">
-                <DialogPanel class="bg-white">
-                    <DialogTitle>Add Item</DialogTitle>
-                    <Formulaire @save="onSave" />
-                </DialogPanel>
+            <Dialog class="relative z-50" :open="true" @close="closeModal">
+                <div
+                    class="fixed inset-0 flex w-screen items-center justify-center bg-black bg-opacity-50"
+                >
+                    <DialogPanel
+                        class="w-full max-w-sm rounded bg-white p-4 shadow-md"
+                    >
+                        <DialogTitle>Add Item</DialogTitle>
+                        <Formulaire @save="onSave" />
+                    </DialogPanel>
+                </div>
             </Dialog>
         </TransitionRoot>
     </div>
@@ -94,6 +116,16 @@ const onDeleteItem = (groupId: string, item: GSListItem) => {
                 ?.find((group) => group.id === groupId)
                 ?.items.indexOf(item) ?? -1,
             1,
+        );
+};
+
+const onDeleteItems = (groupId: string) => {
+    groups.value
+        ?.find((group) => group.id === groupId)
+        ?.items.splice(
+            0,
+            groups.value?.find((group) => group.id === groupId)?.items.length ??
+                0,
         );
 };
 

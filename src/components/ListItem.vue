@@ -4,7 +4,7 @@
             class="flex min-h-10 w-full list-none justify-between rounded-md border bg-white"
         >
             <PopoverButton as="template">
-                <div class="flex-grow truncate bg-red-300 p-2">
+                <div class="flex-grow truncate bg-orange-50 p-2">
                     {{ props.item.title }}
                 </div>
             </PopoverButton>
@@ -33,7 +33,8 @@
             </TransitionRoot>
 
             <div class="h-full shrink-0 bg-green-300">Avatar</div>
-            <button @click="emits('delete-click')">delete</button>
+
+            <Button label="Delete" @click="emits('delete-click')"></Button>
         </li>
     </Popover>
 </template>
@@ -43,6 +44,7 @@ import { Popover, PopoverButton, PopoverPanel } from '@headlessui/vue';
 import { TransitionRoot } from '@headlessui/vue';
 import { GSListItem } from '../defs/defs';
 import ProgressIcon from './ProgressIcon.vue';
+import Button from './Button.vue';
 
 const props = defineProps<{
     item: GSListItem;

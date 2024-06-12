@@ -1,11 +1,16 @@
 <template>
-    <div class="rounded-lg border p-6 text-center">
+    <div class="p-6 text-center">
         <h2 class="text-xl font-bold underline decoration-1">
             {{ props.title }}
         </h2>
         <Button label="Add" @click="emits('add-item')"></Button>
+        <Button
+            label="Delete all"
+            @click="emits('delete-items')"
+            :disabled="props.items.length === 0"
+        ></Button>
 
-        <div class="space-y-4 p-6">
+        <div class="space-y-4 overflow-auto p-6">
             <ListItem
                 v-for="(item, index) in props.items"
                 :key="index"
@@ -35,5 +40,6 @@ const props = withDefaults(
 const emits = defineEmits<{
     (event: 'add-item'): void;
     (event: 'delete-item', item: GSListItem): void;
+    (event: 'delete-items'): void;
 }>();
 </script>

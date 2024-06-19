@@ -40,7 +40,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, defineProps, watch, defineEmits } from 'vue';
 import Button from './Button.vue';
 import {
     Listbox,
@@ -48,14 +48,27 @@ import {
     ListboxOptions,
     ListboxOption,
 } from '@headlessui/vue';
+import { GSListItem } from '../defs/defs';
 
-const emit = defineEmits<{
-    (event: 'save', value: { title: string }): void;
+const props = defineProps<{
+    initialData: GSListItem | null;
 }>();
 
-const formValue = ref<{ title: string }>({
+const emit = defineEmits<{
+    (event: 'save', value: GSListItem): void;
+}>();
+
+const formValue = ref<GSListItem>({
+    id: '',
     title: '',
+    description: '',
+    participants: [],
+    progress: 0,
 });
+
+if (props.initialData) {
+    formValue.value = { ...props.initialData };
+}
 
 const onSave = () => {
     if (!formValue.value.title) {
@@ -64,6 +77,28 @@ const onSave = () => {
 
     emit('save', formValue.value);
 
-    formValue.value = { title: '' };
+    formValue.value = {
+        title: '',
+        description: '',
+        participants: [],
+        progress: 0,
+    };
 };
+
+watch(
+    () => props.initialData,
+    (newData) => {
+        if (newData) {
+            formValue.value = { ...newData };
+        } else {
+            formValue.value = {
+                title: '',
+                description: '',
+                participants: [],
+                progress: 0,
+            };
+        }
+    },
+    { immediate: true },
+);
 </script>

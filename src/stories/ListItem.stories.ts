@@ -15,10 +15,11 @@ type Story = StoryObj<typeof meta>;
  *👇 Render functions are a framework specific feature to allow you control on how the component renders.
  * See https://storybook.js.org/docs/api/csf
  * to learn how to use render functions.
- 
+ */
 export const Default: Story = {
     args: {
         item: {
+            id: '1',
             title: 'Item 1',
             description: 'Description for item 1',
             participants: [],
@@ -30,6 +31,7 @@ export const Default: Story = {
 export const WithVeryLongTitle: Story = {
     args: {
         item: {
+            id: '2',
             title: 'Very long title for an item that should be truncated',
             description: 'Description for item 1',
             participants: [],

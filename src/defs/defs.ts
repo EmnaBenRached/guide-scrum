@@ -1,4 +1,5 @@
 export interface GSListItem {
+    id: string;
     title: string;
     description: string;
     participants: GSUser[];
@@ -15,5 +16,3 @@ export interface GSUser {
     email: string;
     avatar: string;
 }
-
-

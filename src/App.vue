@@ -21,8 +21,10 @@
                     <ListItems
                         :items="group.items"
                         :title="group.title"
+                        :canHide="group.canHide"
                         @add-item="onAddItem(group.id)"
                         @delete-item="onDeleteItem(group.id, $event)"
+                        @edit-item="onEditItem(group.id, $event)"
                         @delete-items="onDeleteItems(group.id)"
                     />
                 </div>
@@ -45,12 +47,21 @@
                     <DialogPanel
                         class="w-full max-w-sm rounded bg-white p-4 shadow-md"
                     >
-                        <DialogTitle>Add Item</DialogTitle>
-                        <Formulaire @save="onSave" />
+                        <DialogTitle>{{
+                            isEditing ? 'Edit Item' : 'Add Item'
+                        }}</DialogTitle>
+                        <Formulaire @save="onSave" :initialData="editingItem" />
                     </DialogPanel>
                 </div>
             </Dialog>
         </TransitionRoot>
+
+        <!-- <TransitionRoot>
+            <Dialog class="relative z-50" :open="true" @close="closeAddGroupModal">
+
+
+            </Dialog>
+        </TransitionRoot> -->
     </div>
 </template>
 
@@ -62,46 +73,69 @@ import {
     DialogPanel,
     DialogTitle,
 } from '@headlessui/vue';
+import { v4 as uuidv4 } from 'uuid';
 import ListItems from './components/ListItems.vue';
 import { GSListItem } from './defs/defs';
 import Formulaire from './components/Formulaire.vue';
 
 const groupIdEnAjout = ref('');
+const editingItem = ref<GSListItem | null>(null);
 const modalOpen = computed(() => groupIdEnAjout.value !== '');
+const isEditing = computed(() => editingItem.value !== null);
 
-const groups = ref<{ title: string; id: string; items: GSListItem[] }[]>([
+const groups = ref<
+    { title: string; id: string; items: GSListItem[]; canHide: boolean }[]
+>([
     {
         title: 'Group 1',
         id: '1',
         items: [],
+        canHide: false,
     },
     {
         title: 'Group 2',
         id: '2',
         items: [],
+        canHide: true,
     },
     {
         title: 'Group 3',
         id: '3',
         items: [],
+        canHide: true,
     },
 ]);
 
-const onSave = ({ title }: { title: string }) => {
-    groups.value
-        ?.find((group) => group.id === groupIdEnAjout.value)
-        ?.items.push({
-            title,
-            description: '',
-            participants: [],
-            progress: 0,
-        });
+const onSave = (itemData: GSListItem) => {
+    const group = groups.value.find(
+        (group) => group.id === groupIdEnAjout.value,
+    );
+    if (!group) return;
+
+    if (isEditing.value && editingItem.value) {
+        const itemIndex = group.items.findIndex(
+            (item) => item.id === editingItem.value?.id,
+        );
+        if (itemIndex !== -1) {
+            group.items[itemIndex] = { ...group.items[itemIndex], ...itemData };
+        }
+    } else {
+        const newItem = {
+            ...itemData,
+            id: uuidv4(),
+            description: itemData.description ?? '',
+            participants: itemData.participants ?? [],
+            progress: itemData.progress ?? 0,
+        };
+        group.items.push(newItem);
+    }
 
     closeModal();
 };
 
 const onAddItem = (groupId: string) => {
     groupIdEnAjout.value = groupId;
+    editingItem.value = null;
 };
 
 const closeModal = () => {
@@ -127,6 +161,11 @@ const onDeleteItems = (groupId: string) => {
             groups.value?.find((group) => group.id === groupId)?.items.length ??
                 0,
         );
+};
+
+const onEditItem = (groupId: string, item: GSListItem) => {
+    groupIdEnAjout.value = groupId;
+    editingItem.value = { ...item };
 };
 
 onMounted(() => {

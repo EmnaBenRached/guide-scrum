@@ -79,6 +79,7 @@ const onSave = () => {
 
     formValue.value = {
         title: '',
+        id: '',
         description: '',
         participants: [],
         progress: 0,
@@ -93,6 +94,7 @@ watch(
         } else {
             formValue.value = {
                 title: '',
+                id: '',
                 description: '',
                 participants: [],
                 progress: 0,

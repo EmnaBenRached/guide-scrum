@@ -1,6 +1,6 @@
 <template>
     <TransitionRoot
-        :show="props.open"
+        :show="props.show"
         enter="duration-300 ease-out"
         enter-from="opacity-0"
         enter-to="opacity-100"
@@ -15,14 +15,8 @@
                 <DialogPanel
                     class="w-full max-w-sm rounded bg-white p-4 shadow-md"
                 >
-                    <DialogTitle> {{ props.title }}</DialogTitle>
-                    <p class="text-center">
-                        {{ props.message }}
-                    </p>
-                    <div class="flex justify-center space-x-4">
-                        <Button label="Oui" @click="emits('yes')"></Button>
-                        <Button label="Non" @click="emits('no')"></Button>
-                    </div>
+                    <DialogTitle>{{ props.title }}</DialogTitle>
+                    <slot></slot>
                 </DialogPanel>
             </div>
         </Dialog>
@@ -30,8 +24,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineEmits } from 'vue';
-import Button from './Button.vue';
+import { defineEmits, defineProps } from 'vue';
 import {
     TransitionRoot,
     Dialog,
@@ -39,22 +32,12 @@ import {
     DialogTitle,
 } from '@headlessui/vue';
 
-const props = withDefaults(
-    defineProps<{
-        open?: boolean;
-        message?: string;
-        title?: string;
-    }>(),
-    {
-        open: false,
-        message: 'Êtes-vous sûr?',
-        title: 'Supprimer',
-    },
-);
+const props = defineProps<{
+    show: boolean;
+    title: string;
+}>();
 
 const emits = defineEmits<{
     (event: 'close'): void;
-    (event: 'yes'): void;
-    (event: 'no'): void;
 }>();
 </script>

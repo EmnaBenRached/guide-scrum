@@ -3,7 +3,7 @@ import ProgressIcon from '../components/ProgressIcon.vue';
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories
 const meta = {
-    title: 'Example/ProgressIcon',
+    title: 'components/ProgressIcon',
     component: ProgressIcon,
     // This component will have an automatically generated docsPage entry: https://storybook.js.org/docs/writing-docs/autodocs
     tags: ['autodocs'],

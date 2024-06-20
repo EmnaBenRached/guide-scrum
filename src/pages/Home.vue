@@ -4,6 +4,7 @@
         <!-- <div class = "flex justify-end p-4">
             <Button label="Ajouter un groupe" @click="openAddGroupModal" class="bg-blue-500 text-white px-4 py-2 rounded" />
         </div> -->
+
         <ListGroupItems
             :groups="groups"
             @add-item="onAddItem"
@@ -11,63 +12,26 @@
             @edit-item="onEditItem"
             @delete-items="onDeleteItems"
         />
-        <!-- <div class="flex flex-wrap justify-between">
-            <div v-for="group in groups" :key="group.id" class="w-1/3 p-4">
-                <div class="h-full rounded-lg bg-slate-100">
-                    <ListItems
-                        :items="group.items"
-                        :title="group.title"
-                        :canHide="group.canHide"
-                        @add-item="onAddItem(group.id)"
-                        @delete-item="onDeleteItem(group.id, $event)"
-                        @edit-item="onEditItem(group.id, $event)"
-                        @delete-items="onDeleteItems(group.id)"
-                    />
-                </div>
-            </div>
-        </div> -->
-        <Modall></Modall>
-        <TransitionRoot
+
+        <FormModal
             :show="modalOpen"
-            enter="duration-300 ease-out"
-            enter-from="opacity-0"
-            enter-to="opacity-100"
-            leave="duration-200 ease-in"
-            leave-from="opacity-100"
-            leave-to="opacity-0"
+            :title="isEditing ? 'Modifier l\'item' : 'Ajouter un item'"
+            @close="closeModal"
         >
-            <Dialog class="relative z-50" :open="true" @close="closeModal">
-                <div
-                    class="fixed inset-0 flex w-screen items-center justify-center bg-black bg-opacity-50"
-                >
-                    <DialogPanel
-                        class="w-full max-w-sm rounded bg-white p-4 shadow-md"
-                    >
-                        <DialogTitle>{{
-                            isEditing ? 'Edit Item' : 'Add Item'
-                        }}</DialogTitle>
-                        <Formulaire @save="onSave" :initialData="editingItem" />
-                    </DialogPanel>
-                </div>
-            </Dialog>
-        </TransitionRoot>
+            <FormItem @save="onSave" :initialData="editingItem" />
+        </FormModal>
     </div>
 </template>
 
 <script setup lang="ts">
 import { onMounted, ref, computed } from 'vue';
-import {
-    TransitionRoot,
-    Dialog,
-    DialogPanel,
-    DialogTitle,
-} from '@headlessui/vue';
 import { v4 as uuidv4 } from 'uuid';
 import { GSListItem } from '../defs/defs';
-import Formulaire from '../components/Formulaire.vue';
 import HeroSection from '../components/HeroSection.vue';
 import ListGroupItems from '../components/ListGroupItems.vue';
+import FormModal from '../components/FormModal.vue';
 import Button from '../components/Button.vue';
+import FormItem from '../components/FormItem.vue';
 
 const groupIdEnAjout = ref('');
 const editingItem = ref<GSListItem | null>(null);

@@ -3,7 +3,7 @@ import ListItems from '../components/ListItems.vue';
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories
 const meta = {
-    title: 'Example/ListItems',
+    title: 'components/ListItems',
     component: ListItems,
     // This component will have an automatically generated docsPage entry: https://storybook.js.org/docs/writing-docs/autodocs
     tags: ['autodocs'],

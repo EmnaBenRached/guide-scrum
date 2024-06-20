@@ -4,7 +4,7 @@ import { actions } from '@storybook/addon-actions';
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories
 const meta = {
-    title: 'Example/ConfirmModal',
+    title: 'components/ConfirmModal',
     component: ConfirmModal,
     // This component will have an automatically generated docsPage entry: https://storybook.js.org/docs/writing-docs/autodocs
     tags: ['autodocs'],
@@ -19,12 +19,16 @@ type Story = StoryObj<typeof meta>;
  * to learn how to use render functions.
  */
 export const Default: Story = {
-    render: (args) => ({
-        components: { ConfirmModal },
-        methods: actions('save'),
-        template: `
-            <ConfirmModal  @save="save"/>
-        `,
-    }),
-    args: {},
+    // render: (args) => ({
+    //     components: { ConfirmModal },
+    //     methods: actions('save'),
+    //     template: `
+    //         <ConfirmModal  @save="save"/>
+    //     `,
+    // }),
+    args: {
+        open: true,
+        message: 'Êtes-vous sûr?',
+        title: 'Supprimer',
+    },
 };

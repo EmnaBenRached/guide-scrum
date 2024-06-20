@@ -16,24 +16,27 @@ type Story = StoryObj<typeof meta>;
  * See https://storybook.js.org/docs/api/csf
  * to learn how to use render functions.
  */
-export const Default: Story = {
+export const ListItemsCanHide: Story = {
     args: {
         title: 'To do list',
         items: [
             {
                 title: 'Task 1',
+                id: '1',
                 description: 'Description for Task 1',
                 participants: [],
                 progress: 0,
             },
             {
                 title: 'Task 2',
+                id: '2',
                 description: 'Description for Task 2',
                 participants: [],
                 progress: 0,
             },
             {
                 title: 'Task 3',
+                id: '3',
                 description: 'Description for Task 3',
                 participants: [
                     {
@@ -50,5 +53,47 @@ export const Default: Story = {
                 progress: 0,
             },
         ],
+        canHide: true,
+    },
+};
+
+export const ListItemsCannotHide: Story = {
+    args: {
+        title: 'Work in progress list',
+        items: [
+            {
+                title: 'Task 1',
+                id: '1',
+                description: 'Description for Task 1',
+                participants: [],
+                progress: 0,
+            },
+            {
+                title: 'Task 2',
+                id: '2',
+                description: 'Description for Task 2',
+                participants: [],
+                progress: 0,
+            },
+            {
+                title: 'Task 3',
+                id: '3',
+                description: 'Description for Task 3',
+                participants: [
+                    {
+                        name: 'John Doe',
+                        email: 'JohnDoe@gmail.com',
+                        avatar: 'https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50',
+                    },
+                    {
+                        name: 'John Doe',
+                        email: 'JohnDoe@gmail.com',
+                        avatar: 'https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50',
+                    },
+                ],
+                progress: 0,
+            },
+        ],
+        canHide: false,
     },
 };

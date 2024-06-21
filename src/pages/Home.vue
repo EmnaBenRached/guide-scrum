@@ -1,10 +1,13 @@
 <template>
     <div class="mt-2 min-h-screen bg-slate-50">
         <HeroSection />
-        <!-- <div class = "flex justify-end p-4">
-            <Button label="Ajouter un groupe" @click="openAddGroupModal" class="bg-blue-500 text-white px-4 py-2 rounded" />
-        </div> -->
-
+        <div class="flex justify-center p-4">
+            <Button
+                label="Ajouter un groupe"
+                class="rounded bg-blue-500 px-2 py-2"
+            >
+            </Button>
+        </div>
         <ListGroupItems
             :groups="groups"
             @add-item="onAddItem"

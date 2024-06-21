@@ -16,3 +16,8 @@ export interface GSUser {
     email: string;
     avatar: string;
 }
+
+export interface InitialData {
+    title: string;
+    canHide: boolean;
+}

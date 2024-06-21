@@ -1,13 +1,16 @@
 <template>
     <div class="mt-2 min-h-screen bg-slate-50">
         <HeroSection />
+
         <div class="flex justify-center p-4">
             <Button
                 label="Ajouter un groupe"
+                @click="modalGroupOpen = true"
                 class="rounded bg-blue-500 px-2 py-2"
             >
             </Button>
         </div>
+
         <ListGroupItems
             :groups="groups"
             @add-item="onAddItem"
@@ -23,22 +26,33 @@
         >
             <FormItem @save="onSave" :initialData="editingItem" />
         </FormModal>
+
+        <FormModal
+            :show="modalGroupOpen"
+            title="Ajouter un groupe"
+            @close="closeModal"
+        >
+            <FormGroup @save="onSaveGroup" :initialData="newGroupData" />
+        </FormModal>
     </div>
 </template>
 
 <script setup lang="ts">
 import { onMounted, ref, computed } from 'vue';
 import { v4 as uuidv4 } from 'uuid';
-import { GSListItem } from '../defs/defs';
+import { GSListItem, InitialData } from '../defs/defs';
 import HeroSection from '../components/HeroSection.vue';
 import ListGroupItems from '../components/ListGroupItems.vue';
 import FormModal from '../components/FormModal.vue';
 import Button from '../components/Button.vue';
 import FormItem from '../components/FormItem.vue';
+import FormGroup from '../components/FormGroup.vue';
 
 const groupIdEnAjout = ref('');
 const editingItem = ref<GSListItem | null>(null);
+const newGroupData = ref<InitialData>({ title: '', canHide: false });
 const modalOpen = computed(() => groupIdEnAjout.value !== '');
+const modalGroupOpen = ref(false);
 const isEditing = computed(() => editingItem.value !== null);
 
 const groups = ref<
@@ -124,6 +138,17 @@ const onDeleteItems = (groupId: string) => {
 const onEditItem = (groupId: string, item: GSListItem) => {
     groupIdEnAjout.value = groupId;
     editingItem.value = { ...item };
+};
+
+const onSaveGroup = (groupData: InitialData) => {
+    const newGroup = {
+        title: groupData.title,
+        id: uuidv4(),
+        items: [],
+        canHide: groupData.canHide,
+    };
+    groups.value.push(newGroup);
+    closeModal();
 };
 
 onMounted(() => {

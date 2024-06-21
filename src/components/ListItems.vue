@@ -17,12 +17,14 @@
                 &times;
             </button>
         </div>
-        <Button label="Add" @click="emits('add-item')"></Button>
-        <Button
-            label="Delete all"
-            @click="confirmModalOpen = true"
-            :disabled="props.items.length === 0"
-        ></Button>
+        <div class="flex justify-center">
+            <Button label="Ajouter" @click="emits('add-item')"></Button>
+            <Button
+                label="Supprimer"
+                @click="confirmModalOpen = true"
+                :disabled="props.items.length === 0"
+            ></Button>
+        </div>
 
         <div class="space-y-4 overflow-auto p-6">
             <ListItem

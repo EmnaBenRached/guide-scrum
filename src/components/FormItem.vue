@@ -1,5 +1,5 @@
 <template>
-    <form action="#">
+    <form @submit.prevent="onSave">
         <div class="">
             <textarea
                 v-model.trim="formValue.title"
@@ -37,6 +37,15 @@
         <div class="mt-4">
             <Button label="Enregistrer" @click="onSave"></Button>
         </div>
+
+        <FormModal
+            v-if="showModal"
+            :show="showModal"
+            title="Erreur"
+            @close="closeModal"
+        >
+            <p>Veuillez remplir le titre de la tâche.</p>
+        </FormModal>
     </form>
 </template>
 
@@ -50,6 +59,7 @@ import {
     ListboxOption,
 } from '@headlessui/vue';
 import { GSListItem, GSGroupItems } from '../domain/models';
+import FormModal from './FormModal.vue';
 
 const props = withDefaults(
     defineProps<{
@@ -72,6 +82,8 @@ const formValue = ref<GSListItem & { groupId?: string }>({
     )?.id,
 });
 
+const showModal = ref(false);
+
 const filtredGroups = computed(() =>
     props.groups.filter(
         (g) => !g.items.map((i) => i.id).includes(formValue.value.id),
@@ -80,6 +92,7 @@ const filtredGroups = computed(() =>
 
 const onSave = () => {
     if (!formValue.value.title || !formValue.value.groupId) {
+        showModal.value = true;
         return;
     }
 
@@ -88,5 +101,9 @@ const onSave = () => {
     delete item.groupId;
 
     emit('save', item, formValue.value.groupId);
+};
+
+const closeModal = () => {
+    showModal.value = false;
 };
 </script>

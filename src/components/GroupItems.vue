@@ -15,7 +15,7 @@
             v-show="group.canHide"
             class="absolute right-0 top-0 text-2xl font-bold"
             label="&times;"
-            @click="group.visible = !group.visible"
+            @click="confirmModalOpen = true"
         >
         </Button>
 
@@ -27,14 +27,23 @@
             @delete-item="emits('delete-item', $event)"
             @delete-items="emits('delete-items')"
         />
+
+        <ConfirmModal
+            :open="confirmModalOpen"
+            @yes="onDeleteGroupConfirmed(props.group)"
+            @no="confirmModalOpen = false"
+            @close="confirmModalOpen = false"
+        >
+        </ConfirmModal>
     </div>
 </template>
 
 <script lang="ts" setup>
 import { GSGroupItems } from '../domain/models';
-import { defineEmits, defineProps } from 'vue';
+import { defineEmits, defineProps, ref } from 'vue';
 import ListItems from './ListItems.vue';
 import Button from './Button.vue';
+import ConfirmModal from './ConfirmModal.vue';
 
 const props = defineProps<{
     group: GSGroupItems;
@@ -46,4 +55,12 @@ const emits = defineEmits<{
     (event: 'delete-item', itemId: string): void;
     (event: 'delete-items'): void;
 }>();
+
+const confirmModalOpen = ref(false);
+
+const onDeleteGroupConfirmed = (group: GSGroupItems) => {
+    group.visible = !group.visible;
+
+    confirmModalOpen.value = false;
+};
 </script>

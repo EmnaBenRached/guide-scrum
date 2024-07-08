@@ -1,5 +1,5 @@
 <template>
-    <form @submit.prevent="emits('save', formValue)">
+    <form @submit.prevent="handleSubmit">
         <div class="mb-4 mt-4 grid grid-cols-2 items-center gap-4">
             <label for="title" class="block text-sm font-medium text-gray-700">
                 Titre du groupe:
@@ -29,6 +29,15 @@
         <div class="mt-2 flex justify-center">
             <Button label="Save" type="submit"></Button>
         </div>
+
+        <FormModal
+            v-if="showModal"
+            :show="showModal"
+            title="Erreur"
+            @close="closeModal"
+        >
+            <p>Veuillez remplir le titre du groupe.</p>
+        </FormModal>
     </form>
 </template>
 
@@ -36,6 +45,7 @@
 import { ref, defineProps, defineEmits } from 'vue';
 import { GSGroupItems } from '../domain/models';
 import Button from './Button.vue';
+import FormModal from './FormModal.vue';
 
 const props = defineProps<{
     group: GSGroupItems;
@@ -46,4 +56,18 @@ const emits = defineEmits<{
 }>();
 
 const formValue = ref<GSGroupItems>({ ...props.group });
+const showModal = ref(false);
+
+const handleSubmit = () => {
+    if (!formValue.value.title) {
+        showModal.value = true;
+        return;
+    }
+
+    emits('save', formValue.value);
+};
+
+const closeModal = () => {
+    showModal.value = false;
+};
 </script>

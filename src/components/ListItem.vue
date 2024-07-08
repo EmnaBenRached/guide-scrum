@@ -43,7 +43,7 @@
 <script setup lang="ts">
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/vue';
 import { TransitionRoot } from '@headlessui/vue';
-import { GSListItem } from '../defs/defs';
+import { GSListItem } from '../domain/models';
 import ProgressIcon from './ProgressIcon.vue';
 import Button from './Button.vue';
 

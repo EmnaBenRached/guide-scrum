@@ -1,14 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/vue3';
-import ListGroupItems from '../components/ListGroupItems.vue';
-import { groupMocks } from '../domain/mocks';
+import Accueil from '../pages/Accueil.vue';
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories
 const meta = {
-    title: 'Components/ListGroupItems',
-    component: ListGroupItems,
+    title: 'Pages/Accueil',
+    component: Accueil,
     // This component will have an automatically generated docsPage entry: https://storybook.js.org/docs/writing-docs/autodocs
     tags: ['autodocs'],
-} satisfies Meta<typeof ListGroupItems>;
+} satisfies Meta<typeof Accueil>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -17,12 +16,4 @@ type Story = StoryObj<typeof meta>;
  * See https://storybook.js.org/docs/api/csf
  * to learn how to use render functions.
  */
-export const Default: Story = {
-    args: {
-        groups: groupMocks,
-    },
-};
-
-export const AucunGroup: Story = {
-    args: {},
-};
+export const Default: Story = {};

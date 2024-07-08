@@ -1,14 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/vue3';
-import ListGroupItems from '../components/ListGroupItems.vue';
+import GroupItems from '../components/GroupItems.vue';
 import { groupMocks } from '../domain/mocks';
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories
 const meta = {
-    title: 'Components/ListGroupItems',
-    component: ListGroupItems,
+    title: 'Components/GroupItems',
+    component: GroupItems,
     // This component will have an automatically generated docsPage entry: https://storybook.js.org/docs/writing-docs/autodocs
     tags: ['autodocs'],
-} satisfies Meta<typeof ListGroupItems>;
+} satisfies Meta<typeof GroupItems>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -19,10 +19,6 @@ type Story = StoryObj<typeof meta>;
  */
 export const Default: Story = {
     args: {
-        groups: groupMocks,
+        group: groupMocks[0],
     },
-};
-
-export const AucunGroup: Story = {
-    args: {},
 };

@@ -20,7 +20,7 @@ type Story = StoryObj<typeof meta>;
 
 export const TextAreaWithoutTitle: Story = {
     args: {
-        initialData: {
+        item: {
             id: '1',
             title: '',
             description: '',
@@ -32,7 +32,7 @@ export const TextAreaWithoutTitle: Story = {
 
 export const TextAreaWithTitle: Story = {
     args: {
-        initialData: {
+        item: {
             id: '1',
             title: 'Item 1',
             description: 'Description of item 1',

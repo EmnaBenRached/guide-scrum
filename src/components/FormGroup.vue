@@ -1,5 +1,5 @@
 <template>
-    <form @submit.prevent="emits('save', formValue.value)">
+    <form @submit.prevent="emits('save', formValue)">
         <div class="mb-4 mt-4 grid grid-cols-2 items-center gap-4">
             <label for="title" class="block text-sm font-medium text-gray-700">
                 Titre du groupe:
@@ -33,25 +33,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref, defineProps, withDefaults, defineEmits } from 'vue';
-import { InitialData } from '../defs/defs';
+import { ref, defineProps, defineEmits } from 'vue';
+import { GSGroupItems } from '../domain/models';
 import Button from './Button.vue';
 
-const props = withDefaults(
-    defineProps<{
-        initialData: InitialData;
-    }>(),
-    {
-        initialData: {
-            title: '',
-            canHide: false,
-        },
-    },
-);
-
-const emits = defineEmits<{
-    (event: 'save', formData: InitialData): void;
+const props = defineProps<{
+    group: GSGroupItems;
 }>();
 
-const formValue = ref<InitialData>({ ...props.initialData });
+const emits = defineEmits<{
+    (event: 'save', group: GSGroupItems): void;
+}>();
+
+const formValue = ref<GSGroupItems>({ ...props.group });
 </script>

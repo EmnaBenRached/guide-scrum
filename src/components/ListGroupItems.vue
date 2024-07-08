@@ -1,39 +1,41 @@
 <template>
-    <div class="flex flex-wrap justify-between">
-        <div v-for="group in props.groups" :key="group.id" class="w-1/3 p-4">
-            <div class="h-full rounded-lg bg-slate-100">
-                <ListItems
-                    :items="group.items"
-                    :title="group.title"
-                    :canHide="group.canHide"
-                    @add-item="emits('add-item', group.id)"
-                    @delete-item="emits('delete-item', group.id, $event)"
-                    @edit-item="emits('edit-item', group.id, $event)"
-                    @delete-items="emits('delete-items', group.id)"
-                />
-            </div>
-        </div>
+    <div
+        v-if="groups.length"
+        class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3"
+    >
+        <GroupItems
+            v-for="(group, i) in props.groups.filter((g) => g.visible)"
+            :group="group"
+            :key="i"
+            @add-item="emits('add-item', group.id!)"
+            @edit-item="emits('edit-item', group.id!, $event)"
+            @delete-item="emits('delete-item', group.id!, $event)"
+            @delete-items="emits('delete-items', group.id!)"
+        ></GroupItems>
+    </div>
+    <div v-else>
+        <p>Aucun Group</p>
     </div>
 </template>
 
 <script setup lang="ts">
 import { defineProps, defineEmits } from 'vue';
-import ListItems from '../components/ListItems.vue';
-import { GSListItem } from '../defs/defs';
+import { GSGroupItems } from '../domain/models';
+import GroupItems from './GroupItems.vue';
 
-const props = defineProps<{
-    groups: {
-        title: string;
-        id: string;
-        items: GSListItem[];
-        canHide: boolean;
-    }[];
-}>();
+const props = withDefaults(
+    defineProps<{
+        groups: GSGroupItems[];
+    }>(),
+    {
+        groups: () => [],
+    },
+);
 
 const emits = defineEmits<{
     (event: 'add-item', groupId: string): void;
-    (event: 'delete-item', groupId: string, item: GSListItem): void;
+    (event: 'edit-item', groupId: string, itemId: string): void;
+    (event: 'delete-item', groupId: string, itemId: string): void;
     (event: 'delete-items', groupId: string): void;
-    (event: 'edit-item', groupId: string, item: GSListItem): void;
 }>();
 </script>

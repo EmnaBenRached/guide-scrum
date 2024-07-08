@@ -3,20 +3,21 @@
         <div class="">
             <textarea
                 v-model.trim="formValue.title"
-                class="w-full rounded border p-2"
+                class="mt-4 w-full rounded border p-2"
                 placeholder="Write your task..."
             ></textarea>
-            <Listbox v-model="formValue.title">
-                <ListboxButton>
-                    <!-- <span>{{ formValue.title }}</span> -->
+            <Listbox v-model="formValue.groupId">
+                <ListboxButton
+                    class="focus:shadow-outline mt-4 rounded border border-stone-500 bg-slate-200 px-1 py-2 text-black hover:bg-orange-100 focus:outline-none"
+                >
+                    {{
+                        props.groups.find((g) => g.id === formValue.groupId)
+                            ?.title ?? 'Selectionner un groupe'
+                    }}
                 </ListboxButton>
                 <ListboxOptions v-slot="{ selected }">
                     <ListboxOption
-                        v-for="group in [
-                            { id: '1', title: 'Groupe 1' },
-                            { id: '2', title: 'Groupe 2' },
-                            { id: '3', title: 'Groupe 3' },
-                        ]"
+                        v-for="group in filtredGroups"
                         as="template"
                         :value="group.id"
                         :key="group.id"
@@ -33,14 +34,14 @@
                 </ListboxOptions>
             </Listbox>
         </div>
-        <div class="mt-2">
-            <Button label="Save" @click="onSave"></Button>
+        <div class="mt-4">
+            <Button label="Enregistrer" @click="onSave"></Button>
         </div>
     </form>
 </template>
 
 <script setup lang="ts">
-import { ref, defineProps, watch, defineEmits } from 'vue';
+import { ref, defineProps, defineEmits, computed } from 'vue';
 import Button from './Button.vue';
 import {
     Listbox,
@@ -48,59 +49,44 @@ import {
     ListboxOptions,
     ListboxOption,
 } from '@headlessui/vue';
-import { GSListItem } from '../defs/defs';
+import { GSListItem, GSGroupItems } from '../domain/models';
 
-const props = defineProps<{
-    initialData: GSListItem | null;
-}>();
+const props = withDefaults(
+    defineProps<{
+        item: GSListItem;
+        groups?: GSGroupItems[];
+    }>(),
+    {
+        groups: () => [],
+    },
+);
 
 const emit = defineEmits<{
-    (event: 'save', value: GSListItem): void;
+    (event: 'save', item: GSListItem, groupId: string): void;
 }>();
 
-const formValue = ref<GSListItem>({
-    id: '',
-    title: '',
-    description: '',
-    participants: [],
-    progress: 0,
+const formValue = ref<GSListItem & { groupId?: string }>({
+    ...props.item,
+    groupId: props.groups.find((g) =>
+        g.items.map((i) => i.id).includes(props.item.id),
+    )?.id,
 });
 
-if (props.initialData) {
-    formValue.value = { ...props.initialData };
-}
+const filtredGroups = computed(() =>
+    props.groups.filter(
+        (g) => !g.items.map((i) => i.id).includes(formValue.value.id),
+    ),
+);
 
 const onSave = () => {
-    if (!formValue.value.title) {
+    if (!formValue.value.title || !formValue.value.groupId) {
         return;
     }
 
-    emit('save', formValue.value);
+    const item = { ...formValue.value };
 
-    formValue.value = {
-        title: '',
-        id: '',
-        description: '',
-        participants: [],
-        progress: 0,
-    };
+    delete item.groupId;
+
+    emit('save', item, formValue.value.groupId);
 };
-
-watch(
-    () => props.initialData,
-    (newData) => {
-        if (newData) {
-            formValue.value = { ...newData };
-        } else {
-            formValue.value = {
-                title: '',
-                id: '',
-                description: '',
-                participants: [],
-                progress: 0,
-            };
-        }
-    },
-    { immediate: true },
-);
 </script>

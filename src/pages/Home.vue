@@ -1,157 +1,163 @@
 <template>
-    <div class="mt-2 min-h-screen bg-slate-50">
-        <HeroSection />
-
+    <div>
         <div class="flex justify-center p-4">
             <Button
-                label="Ajouter un groupe"
-                @click="modalGroupOpen = true"
                 class="rounded bg-blue-500 px-2 py-2"
+                label="Ajouter un groupe"
+                @click="editGroup()"
             >
             </Button>
         </div>
 
         <ListGroupItems
             :groups="groups"
-            @add-item="onAddItem"
+            @add-item="onAddOrEditItem"
+            @edit-item="onAddOrEditItem"
             @delete-item="onDeleteItem"
-            @edit-item="onEditItem"
-            @delete-items="onDeleteItems"
+            @delete-items="onDeleteGroupItems"
         />
 
         <FormModal
-            :show="modalOpen"
-            :title="isEditing ? 'Modifier l\'item' : 'Ajouter un item'"
-            @close="closeModal"
+            :show="formItemModalOpen"
+            :title="editingItem?.id ? `Modifier l'item` : `Ajouter un item`"
+            @close="editingItem = null"
         >
-            <FormItem @save="onSave" :initialData="editingItem" />
+            <FormItem
+                v-if="editingItem"
+                @save="onSaveItem"
+                :item="editingItem"
+                :groups="groups"
+            />
         </FormModal>
 
         <FormModal
-            :show="modalGroupOpen"
+            :show="formGroupModalOpen"
             title="Ajouter un groupe"
-            @close="closeModal"
+            @close="editingGroup = null"
         >
-            <FormGroup @save="onSaveGroup" :initialData="newGroupData" />
+            <FormGroup
+                v-if="editingGroup"
+                @save="onSaveGroup"
+                :group="editingGroup"
+            />
         </FormModal>
     </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, computed } from 'vue';
+import { ref, computed } from 'vue';
 import { v4 as uuidv4 } from 'uuid';
-import { GSListItem, InitialData } from '../defs/defs';
-import HeroSection from '../components/HeroSection.vue';
+import { GSListItem, GSGroupItems } from '../domain/models';
 import ListGroupItems from '../components/ListGroupItems.vue';
 import FormModal from '../components/FormModal.vue';
 import Button from '../components/Button.vue';
 import FormItem from '../components/FormItem.vue';
 import FormGroup from '../components/FormGroup.vue';
 
-const groupIdEnAjout = ref('');
 const editingItem = ref<GSListItem | null>(null);
-const newGroupData = ref<InitialData>({ title: '', canHide: false });
-const modalOpen = computed(() => groupIdEnAjout.value !== '');
-const modalGroupOpen = ref(false);
-const isEditing = computed(() => editingItem.value !== null);
+const editingGroup = ref<GSGroupItems | null>(null);
+const formItemModalOpen = computed(() => editingItem.value !== null);
+const formGroupModalOpen = computed(() => editingGroup.value !== null);
 
-const groups = ref<
-    { title: string; id: string; items: GSListItem[]; canHide: boolean }[]
->([
-    {
-        title: 'Group 1',
-        id: '1',
-        items: [],
-        canHide: false,
-    },
-    {
-        title: 'Group 2',
-        id: '2',
-        items: [],
-        canHide: true,
-    },
-    {
-        title: 'Group 3',
-        id: '3',
-        items: [],
-        canHide: true,
-    },
-]);
+const groups = ref<GSGroupItems[]>([]);
 
-const onSave = (itemData: GSListItem) => {
-    const group = groups.value.find(
-        (group) => group.id === groupIdEnAjout.value,
-    );
-    if (!group) return;
+const onSaveItem = (item: GSListItem, groupId: string) => {
+    const group = groups.value.find((group) => group.id === groupId);
 
-    if (isEditing.value && editingItem.value) {
-        const itemIndex = group.items.findIndex(
-            (item) => item.id === editingItem.value?.id,
-        );
-        if (itemIndex !== -1) {
-            group.items[itemIndex] = { ...group.items[itemIndex], ...itemData };
-        }
-    } else {
-        const newItem = {
-            ...itemData,
-            id: uuidv4(),
-            description: itemData.description ?? '',
-            participants: itemData.participants ?? [],
-            progress: itemData.progress ?? 0,
-        };
-        group.items.push(newItem);
+    if (!group) {
+        throw new Error('Group not found');
     }
 
-    closeModal();
-};
+    if (item.id) {
+        const itemIndex = group.items.findIndex((i) => i.id === item.id);
 
-const onAddItem = (groupId: string) => {
-    groupIdEnAjout.value = groupId;
+        if (itemIndex === -1) {
+            throw new Error('Item not found');
+        }
+
+        group.items[itemIndex] = item;
+    } else {
+        item.id = uuidv4();
+
+        group.items.push(item);
+    }
+
     editingItem.value = null;
 };
 
-const closeModal = () => {
-    groupIdEnAjout.value = '';
+const onSaveGroup = (group: GSGroupItems) => {
+    if (group.id) {
+        const indexGroup = groups.value.findIndex((g) => g.id === group.id);
+
+        if (indexGroup !== -1) {
+            groups.value[indexGroup] = group;
+        }
+    } else {
+        group.id = uuidv4();
+
+        groups.value.unshift(group);
+    }
+
+    editingGroup.value = null;
 };
 
-const onDeleteItem = (groupId: string, item: GSListItem) => {
-    groups.value
-        ?.find((group) => group.id === groupId)
-        ?.items.splice(
-            groups.value
-                ?.find((group) => group.id === groupId)
-                ?.items.indexOf(item) ?? -1,
-            1,
-        );
-};
-
-const onDeleteItems = (groupId: string) => {
-    groups.value
-        ?.find((group) => group.id === groupId)
-        ?.items.splice(
-            0,
-            groups.value?.find((group) => group.id === groupId)?.items.length ??
-                0,
-        );
-};
-
-const onEditItem = (groupId: string, item: GSListItem) => {
-    groupIdEnAjout.value = groupId;
-    editingItem.value = { ...item };
-};
-
-const onSaveGroup = (groupData: InitialData) => {
-    const newGroup = {
-        title: groupData.title,
-        id: uuidv4(),
+const editGroup = (group?: GSGroupItems) => {
+    editingGroup.value = group ?? {
+        title: '',
+        canHide: false,
         items: [],
-        canHide: groupData.canHide,
+        visible: true,
     };
-    groups.value.push(newGroup);
-    closeModal();
 };
 
-onMounted(() => {
-    document.title = 'Guide Scrum';
-});
+const onAddOrEditItem = (groupId: string, itemId?: string) => {
+    const group = groups.value.find((group) => group.id === groupId);
+
+    if (!group) {
+        throw new Error('Group not found');
+    }
+
+    if (itemId) {
+        const item = group.items.find((item) => item.id === itemId);
+
+        if (!item) {
+            throw new Error('Item not found');
+        }
+
+        editingItem.value = { ...item };
+    } else {
+        editingItem.value = {
+            title: '',
+            description: '',
+            participants: [],
+            progress: 0,
+        };
+    }
+};
+
+const onDeleteItem = (groupId: string, itemId: string) => {
+    const group = groups.value.find((group) => group.id === groupId);
+
+    if (!group) {
+        throw new Error('Group not found');
+    }
+
+    const itemIndex = group.items.findIndex((item) => item.id === itemId);
+
+    if (itemIndex === -1) {
+        throw new Error('Item not found');
+    }
+
+    group.items.splice(itemIndex, 1);
+};
+
+const onDeleteGroupItems = (groupId: string) => {
+    const group = groups.value?.find((group) => group.id === groupId);
+
+    if (!group) {
+        throw new Error('Group not found');
+    }
+
+    group.items = [];
+};
 </script>

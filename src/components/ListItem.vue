@@ -34,8 +34,8 @@
 
             <div class="h-full shrink-0 bg-green-300">Avatar</div>
 
-            <Button label="Delete" @click="emits('delete-click')"></Button>
-            <Button label="Edit" @click="emits('edit-click')"></Button>
+            <Button label="Supprimer" @click="emits('delete-click')"></Button>
+            <Button label="Modifier" @click="emits('edit-click')"></Button>
         </li>
     </Popover>
 </template>

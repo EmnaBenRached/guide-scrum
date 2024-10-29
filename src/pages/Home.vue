@@ -45,7 +45,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import { v4 as uuidv4 } from 'uuid';
 import { GSListItem, GSGroupItems } from '../domain/models';
 import ListGroupItems from '../components/ListGroupItems.vue';
@@ -60,6 +60,16 @@ const formItemModalOpen = computed(() => editingItem.value !== null);
 const formGroupModalOpen = computed(() => editingGroup.value !== null);
 
 const groups = ref<GSGroupItems[]>([]);
+
+const saveGroupsToLocalStorage = () => {
+    localStorage.setItem('groups', JSON.stringify(groups.value));
+};
+
+onMounted(() => {
+    groups.value = JSON.parse(localStorage.getItem('groups') || '[]');
+});
+
+watch(groups, saveGroupsToLocalStorage, { deep: true });
 
 const onSaveItem = (item: GSListItem, groupId: string) => {
     const group = groups.value.find((group) => group.id === groupId);

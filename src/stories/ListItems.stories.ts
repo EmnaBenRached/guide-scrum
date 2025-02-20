@@ -18,7 +18,7 @@ type Story = StoryObj<typeof meta>;
  */
 export const ListItemsCanHide: Story = {
     args: {
-        title: 'To do list',
+        // title: 'To do list',
         items: [
             {
                 title: 'Task 1',
@@ -59,7 +59,7 @@ export const ListItemsCanHide: Story = {
 
 export const ListItemsCannotHide: Story = {
     args: {
-        title: 'Work in progress list',
+        // title: 'Work in progress list',
         items: [
             {
                 title: 'Task 1',
@@ -94,6 +94,6 @@ export const ListItemsCannotHide: Story = {
                 progress: 0,
             },
         ],
-        canHide: false,
+        // canHide: false,
     },
 };
